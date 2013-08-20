@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Scanner" default="package">
+
+  <!-- Target: build -->
+  <target name="build">
+    <delete dir="./build" />
+    <mkdir dir="./build" />
+    <copy todir="./build">
+      <fileset dir=".">
+        <include name="src/" />
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- Target: package -->
+  <target name="package" depends="build">
+    <delete file="./Scanner.phar" />
+    <pharpackage
+      destfile="./scanner.phar"
+      basedir="./build"
+      compression="none"
+      stub="./stub.php"
+      signature="sha1">
+      <fileset dir="./build">
+        <include name="**/**" />
+      </fileset>
+      <metadata>
+        <element name="version" value="0.0.1" />
+        <element name="authors">
+          <element name="Jim Robinson">
+            <element name="email" value="jscrobinson@gmail.com" />
+          </element>
+        </element>
+      </metadata>
+    </pharpackage>
+  </target>
+</project>
