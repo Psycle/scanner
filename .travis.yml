@@ -4,4 +4,8 @@ php:
   - 5.3
   - 5.4
   - 5.5
-script: phpunit --bootstrap="Tests/bootstrap.php"
+script: phpunit --coverage-text
+
+notifications:
+  email:
+    - james.robinson@psycle.com
