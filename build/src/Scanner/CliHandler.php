@@ -1,5 +1,5 @@
 <?php
-class NeoPh_CliHandler {
+class Scanner_CliHandler implements Scanner_Output_Interface, Scanner_Option_Interface {
     
     public $streamPath = 'php://stdout';
     protected $_outputStream;
@@ -34,11 +34,11 @@ class NeoPh_CliHandler {
     
     /**
      * 
-     * @return CliHandler_Colour
+     * @return Scanner_CliHandler_Colour
      */
     public function getColourClass() {
         if(is_null($this->_colourClass)) {
-            $this->_colourClass = new CliHandler_Colour;
+            $this->_colourClass = new Scanner_CliHandler_Colour;
         }
         
         return $this->_colourClass;
@@ -58,5 +58,38 @@ class NeoPh_CliHandler {
      */
     public function outputError($string) {
         $this->output($string, 'red');
+    }
+    
+    /**
+     * 
+     * @param type $option
+     * @param type $value
+     */
+    public function setOption($option, $value) {
+        
+    }
+    
+    /**
+     * 
+     * @param type $option
+     * @param type $default
+     */
+    public function getOption($option, $default = null) {
+        
+    }
+    
+    /**
+     * 
+     * @param type $options
+     */
+    public function setOptions($options) {
+        
+    }
+    
+    /**
+     * 
+     */
+    public function getOptions() {
+        
     }
 }

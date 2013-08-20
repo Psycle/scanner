@@ -1,6 +1,6 @@
 <?php
 
-class CliHandler_Colour {
+class Scanner_CliHandler_Colour {
 		private $foreground_colors = array();
 		private $background_colors = array();
  

@@ -1,6 +1,6 @@
 <?php
 
-class NeoPh {
+class Scanner {
     
     /**
      *
@@ -16,27 +16,28 @@ class NeoPh {
     
     /**
      *
-     * @var NeoPh_Results 
+     * @var Scanner_Results 
      */
     protected $_results;
     
+    protected $_outputHandler;
+    
+    protected $_optionHandler;
+    
     protected $_extensions = array();
     
-    /**
-     * @param string|array $path
-     */
-    public function __construct($path) {
-        $args = func_get_args();
-        
-        $path = array_shift($args[0]);
-        $this->setOptions($args[0]);
-        $this->addPath($path);
+    public function setOutputHandler(Scanner_Output_Interface $handler) {
+        $this->_outputHandler = $handler;
+    }
+    
+    public function setOptionHandler(Scanner_Option_Interface $handler) {
+        $this->_optionHandler = $handler;
     }
     
     /**
      * 
      * @param string $options
-     * @return NeoPh Description
+     * @return Scanner Description
      */
     public function setOptions($options) {
         
@@ -65,7 +66,7 @@ class NeoPh {
                 $this->_extensions = explode(',', $val);
                 break;
             default :
-                throw new NeoPh_InvalidArgumentException('Option ' . $option . ' is not recognised.');
+                throw new Scanner_InvalidArgumentException('Option ' . $option . ' is not recognised.');
                 break;
         }
     }
@@ -73,7 +74,7 @@ class NeoPh {
     /**
      * 
      * @param string|array $path
-     * @return \NeoPh
+     * @return \Scanner
      */
     public function addPath($path) {
         if(is_string($path))
@@ -88,18 +89,18 @@ class NeoPh {
     
     /**
      * 
-     * @param NeoPh_Test_Interface $test
-     * @return \NeoPh
+     * @param Scanner_Test_Interface $test
+     * @return \Scanner
      */
-    public function addTest(NeoPh_Test_Interface $test) {
+    public function addTest(Scanner_Test_Interface $test) {
         $this->_tests[get_class($test)] = $test;
         return $this;
     }
     
     /**
      * 
-     * @param string|NeoPh_Test_Interface $testClass
-     * @return \NeoPh
+     * @param string|Scanner_Test_Interface $testClass
+     * @return \Scanner
      */
     public function removeTest($testClass) { 
         unset($this->_tests[is_object($testClass) ? get_class($testClass) : $testClass]);
@@ -108,10 +109,10 @@ class NeoPh {
     
     /**
      * 
-     * @param \NeoPh_Result $result
-     * @return \NeoPh Description
+     * @param \Scanner_Result $result
+     * @return \Scanner Description
      */
-    public function addResult(NeoPh_Result $result) {
+    public function addResult(Scanner_Result $result) {
         return $this;
     }
 }

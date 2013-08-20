@@ -5,6 +5,8 @@
   <target name="build">
     <delete dir="./build" />
     <mkdir dir="./build" />
+		<delete dir="./bin" />
+    <mkdir dir="./bin" />
     <copy todir="./build">
       <fileset dir=".">
         <include name="src/" />
@@ -14,9 +16,9 @@
 
   <!-- Target: package -->
   <target name="package" depends="build">
-    <delete file="./Scanner.phar" />
+    <delete file="./bin/scanner.phar" />
     <pharpackage
-      destfile="./scanner.phar"
+      destfile="./bin/scanner.phar"
       basedir="./build"
       compression="none"
       stub="./stub.php"
