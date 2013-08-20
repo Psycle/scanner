@@ -20,4 +20,5 @@ $di = new JuiceContainer();
 
 $optionsInterface = new Scanner_CliHandler_Option();
 $CliHandler = new Scanner_CliHandler($optionsInterface);
+$CliHandler->output(PHP_EOL);
 $CliHandler->run();

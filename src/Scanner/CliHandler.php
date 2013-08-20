@@ -1,16 +1,17 @@
 <?php
 
-class Scanner_CliHandler implements Scanner_Output_Interface {
-
-    public $streamPath = 'php://stdout';
-    protected $_outputStream;
+class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements Scanner_Output_Interface {
     
     /**
      *
      * @var Scanner_Option_Interface
      */
     protected $_optionInterface;
-    protected $_colourClass;
+
+    /**
+     *
+     * @var array 
+     */
     protected $_options = array(
         'alltests' => array(
             'switch' => true,
@@ -36,6 +37,10 @@ class Scanner_CliHandler implements Scanner_Output_Interface {
         ),
     );
 
+    /**
+     * 
+     * @param Scanner_Option_Interface $optionInterface
+     */
     public function __construct(Scanner_Option_Interface $optionInterface) {
         $this->_optionInterface = $optionInterface;
         $this->_setupOptions();
@@ -43,58 +48,13 @@ class Scanner_CliHandler implements Scanner_Output_Interface {
         
     }
     
+    /**
+     * Sets up the options with default values etc.
+     */
     protected function _setupOptions() {
         $this->_options['path']['default'] = getcwd();
     }
 
-    public function getStreamResource() {
-        if (is_null($this->_outputStream)) {
-            $this->_outputStream = fopen($this->streamPath, 'r');
-        }
-
-        return $this->_outputStream;
-    }
-
-    public function writeToOutput($string) {
-        fwrite($this->getStreamResource(), $string);
-        return $this;
-    }
-
-    public function __destruct() {
-        fclose($this->getStreamResource());
-    }
-
-    public function output($string, $colour = 'white') {
-        $this->writeToOutput($this->getColourClass()->getColoredString($string, $colour) . PHP_EOL);
-    }
-
-    /**
-     * 
-     * @return Scanner_CliHandler_Colour
-     */
-    public function getColourClass() {
-        if (is_null($this->_colourClass)) {
-            $this->_colourClass = new Scanner_CliHandler_Colour;
-        }
-
-        return $this->_colourClass;
-    }
-
-    /**
-     * 
-     * @param string $string
-     */
-    public function outputMessage($string) {
-        $this->output($string, 'green');
-    }
-
-    /**
-     * 
-     * @param string $string
-     */
-    public function outputError($string) {
-        $this->output($string, 'red');
-    }
 
     public function run() {
         try {
