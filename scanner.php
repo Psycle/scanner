@@ -18,7 +18,9 @@ require_once dirname(__FILE__) . '/vendor/catacgc/juice-di-container/src/Contain
 
 $di = new JuiceContainer();
 
-$optionsInterface = new Scanner_CliHandler_Option();
-$CliHandler = new Scanner_CliHandler($optionsInterface);
-$CliHandler->output(PHP_EOL);
-$CliHandler->run();
+$di['cli_optionhandler'] = JuiceDefinition::create('Scanner_CliHandler_Option');
+$di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler'));
+
+
+$di['cli_handler']->output(PHP_EOL);
+$di['cli_handler']->run();
