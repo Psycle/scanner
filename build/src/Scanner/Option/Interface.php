@@ -4,4 +4,5 @@ interface Scanner_Option_Interface {
     public function getOption($option, $default = null);
     public function setOptions($options);
     public function getOptions();
+    public function setup($config);
 }
