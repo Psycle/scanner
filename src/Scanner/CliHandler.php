@@ -49,11 +49,16 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
         catch (Scanner_CliHandler_Exception $e) {
             $this->outputError($e->getMessage() . PHP_EOL);
             $this->outputUsage();
+            $this->_logger->error($e->getMessage());
+            return $e;
         }
          catch (Scanner_Test_Exception $e) {
             $this->outputError('Error in test "' . $this->_currentTest . '": ' . PHP_EOL . '"' . $e->getMessage() . '"' . PHP_EOL);
             $this->outputUsage();
+            $this->_logger->error($e->getMessage());
+            return $e;
         }
+        return true;
     }
 
     /**

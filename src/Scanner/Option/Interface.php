@@ -6,4 +6,5 @@ interface Scanner_Option_Interface {
     public function getOptions();
     public function setup($config = null);
     public function getHelpText();
+    public function parse();
 }

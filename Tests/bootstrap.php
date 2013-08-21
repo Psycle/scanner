@@ -25,4 +25,6 @@ function autoloadcallback($className) {
     }
 }
 
+require_once dirname(dirname(__FILE__)) . '/vendor/catacgc/juice-di-container/src/Container.php';
+
 ?>
