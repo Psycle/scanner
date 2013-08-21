@@ -11,23 +11,29 @@ class Scanner_CliHandlerTest extends PHPUnit_Framework_TestCase {
     protected $object;
 
     /**
+     *
+     * @var JuiceContainer 
+     */
+    protected $di;
+    
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp() {
-        $di = new JuiceContainer();
-        $di['filter_string'] = JuiceDefinition::create('Scanner_Util_Filter_String');
-        $di['logger'] = JuiceDefinition::create('Scanner_Log_ErrorLog');
-        $di['options'] = array(
+        $this->di = new JuiceContainer();
+        $this->di['filter_string'] = JuiceDefinition::create('Scanner_Util_Filter_String');
+        $this->di['logger'] = JuiceDefinition::create('Scanner_Log_ErrorLog');
+        $this->di['options'] = array(
             'test' => 'long_word'
         );
-        $di['stream_path'] = '/tmp/testout';
-        $di['cli_optionhandler'] = JuiceDefinition::create('Scanner_CliHandler_Option_Array', array('@options'));
-        $di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler', '@logger'))
+        $this->di['stream_path'] = '/tmp/testout';
+        $this->di['cli_optionhandler'] = JuiceDefinition::create('Scanner_CliHandler_Option_Array', array('@options'));
+        $this->di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler', '@logger'))
                 ->call('setStreamPath', array('@stream_path'))
                 ->call('setStringFilterInterface', array('@filter_string'));
 
-        $this->object = $di['cli_handler'];
+        $this->object = $this->di['cli_handler'];
     }
 
     /**
@@ -39,14 +45,12 @@ class Scanner_CliHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Scanner_CliHandler::setStringFilterInterface
-     * @todo   Implement testSetStringFilterInterface().
+     * @covers Scanner_CliHandler::setStringFilterInterface     
      */
     public function testSetStringFilterInterface() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $interface = $this->di['filter_string'];
+        $this->object->setStringFilterInterface($interface);
+        $this->assertSame($interface, $this->object->getStringFilterInterface());
     }
 
     /**
@@ -54,10 +58,9 @@ class Scanner_CliHandlerTest extends PHPUnit_Framework_TestCase {
      * @todo   Implement testGetStringFilterInterface().
      */
     public function testGetStringFilterInterface() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+        $interface = $this->di['filter_string'];
+        $this->object->setStringFilterInterface($interface);
+        $this->assertSame($interface, $this->object->getStringFilterInterface());
     }
 
     /**
