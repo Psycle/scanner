@@ -20,9 +20,7 @@ function autoloadcallback($className) {
     
 	if (file_exists($classPath)) {
 		require($classPath);
-	} else {
-        throw new Exception('file not found ' . $classPath);
-    }
+	}
 }
 
 require_once dirname(dirname(__FILE__)) . '/vendor/catacgc/juice-di-container/src/Container.php';

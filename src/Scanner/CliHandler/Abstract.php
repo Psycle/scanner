@@ -84,7 +84,7 @@ abstract class Scanner_CliHandler_Abstract {
 
     public function getStreamResource() {
         if (is_null($this->_outputStream)) {
-            $this->_outputStream = fopen($this->streamPath, 'r');
+            $this->_outputStream = fopen($this->streamPath, 'a+');
         }
 
         return $this->_outputStream;

@@ -21,8 +21,11 @@ class Scanner_CliHandlerTest extends PHPUnit_Framework_TestCase {
         $di['options'] = array(
             'test' => 'long_word'
         );
+        $di['stream_path'] = '/tmp/testout';
         $di['cli_optionhandler'] = JuiceDefinition::create('Scanner_CliHandler_Option_Array', array('@options'));
-        $di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler', '@logger'))->call('setStringFilterInterface', array('@filter_string'));
+        $di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler', '@logger'))
+                ->call('setStreamPath', array('@stream_path'))
+                ->call('setStringFilterInterface', array('@filter_string'));
 
         $this->object = $di['cli_handler'];
     }

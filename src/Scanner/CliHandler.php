@@ -125,4 +125,7 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
         $this->output($this->_optionInterface->getHelpText());
     }
 
+    public function setStreamPath($stream) {
+        $this->streamPath = $stream;
+    }
 }

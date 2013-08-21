@@ -7,4 +7,5 @@ interface Scanner_Output_Interface {
     
     public function outputMessage($string);
     
+    public function setStreamPath($path);
 }
