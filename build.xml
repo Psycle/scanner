@@ -22,7 +22,7 @@
       destfile="./bin/scanner.phar"
       basedir="./build"
       compression="none"
-      stub="./stub.php"
+      stub="./includes/stub.php"
       signature="sha1">
       <fileset dir="./build">
         <include name="**/**" />

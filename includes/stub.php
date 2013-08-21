@@ -15,5 +15,5 @@ function autoloadcallback($className) {
 
 require_once 'phar://scanner.phar/vendor/catacgc/juice-di-container/src/Container.php';
 
-require_once dirname(dirname(__FILE__)) . '/setup_di.php';
+require_once dirname(dirname(__FILE__)) . '/includes/setup_di.php';
 __HALT_COMPILER();
