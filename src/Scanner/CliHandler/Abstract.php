@@ -1,6 +1,6 @@
 <?php
 
-abstract class Scanner_CliHandler_Abstract {
+abstract class Scanner_CliHandler_Abstract implements Scanner_Output_Interface {
 
     public $streamPath = 'php://stdout';
     protected $_outputStream;

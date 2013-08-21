@@ -1,7 +1,6 @@
 <?php
 
 class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements 
-        Scanner_Output_Interface,         
         Scanner_Util_Filter_String_RequireInterface {
     
     /**
