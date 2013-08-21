@@ -29,8 +29,9 @@ class Scanner_CliHandlerTest extends PHPUnit_Framework_TestCase {
         );
         $this->di['stream_path'] = '/tmp/testout';
         $this->di['cli_optionhandler'] = JuiceDefinition::create('Scanner_CliHandler_Option_Array', array('@options'));
-        $this->di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler', '@logger'))
-                ->call('setStreamPath', array('@stream_path'))
+        $this->di['output_interface'] = JuiceDefinition::create('Scanner_Output_Cli')
+                ->call('setStreamPath', array('@stream_path'));
+        $this->di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@output_interface', '@cli_optionhandler', '@logger'))
                 ->call('setStringFilterInterface', array('@filter_string'));
 
         $this->object = $this->di['cli_handler'];
