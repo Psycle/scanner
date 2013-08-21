@@ -1,7 +1,6 @@
 <?php
 
 class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements 
-        Scanner_Output_Interface,         
         Scanner_Util_Filter_String_RequireInterface {
     
     /**
@@ -27,11 +26,17 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
         array('e', 'extension', Scanner_CliHandler_Option_GetOpt::REQUIRED_ARGUMENT, 'The file extension to scan'),
     );
 
+    /**
+     * Sets the object used for string filtering
+     * 
+     * @param Scanner_Util_Filter_String_Interface $stringInterface
+     */
     public function setStringFilterInterface(Scanner_Util_Filter_String_Interface $stringInterface) {
         $this->_stringInterface = $stringInterface;
     }
     
     /**
+     * Gets the string filtering object
      * 
      * @return Scanner_Util_Filter_String_Interface
      */
@@ -47,13 +52,18 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
             $this->_run();
         } 
         catch (Scanner_CliHandler_Exception $e) {
-            $this->outputError($e->getMessage() . PHP_EOL);
+            $this->getOutputInterface()->outputError($e->getMessage() . PHP_EOL);
             $this->outputUsage();
+            $this->_logger->error($e->getMessage());
+            return $e;
         }
          catch (Scanner_Test_Exception $e) {
-            $this->outputError('Error in test "' . $this->_currentTest . '": ' . PHP_EOL . '"' . $e->getMessage() . '"' . PHP_EOL);
+            $this->getOutputInterface()->outputError('Error in test "' . $this->_currentTest . '": ' . PHP_EOL . '"' . $e->getMessage() . '"' . PHP_EOL);
             $this->outputUsage();
+            $this->_logger->error($e->getMessage());
+            return $e;
         }
+        return true;
     }
 
     /**
@@ -74,7 +84,7 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
      * 
      */
     public function runAllTests() {
-        $this->outputMessage('Running all tests');
+        $this->getOutputInterface()->outputMessage('Running all tests');
     }
 
     /**
@@ -83,7 +93,7 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
     public function runTest($test) {
         $this->_currentTest = $test;
         $this->getTestInstance($this->_currentTest)->run();
-        $this->outputMessage('Running test ' . $test);
+        $this->getOutputInterface()->outputMessage('Running test ' . $test);
     }
     
     /**
@@ -99,7 +109,7 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
             throw new Scanner_CliHandler_Exception('The specified test does not exist.');
         }
         
-        return new $testClassName($this->_optionInterface, $this, $this->_logger);
+        return new $testClassName($this->_optionInterface, $this->getOutputInterface(), $this->_logger);
     }
     
     /**
@@ -115,9 +125,10 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
      * 
      */
     public function outputUsage() {
-        $this->output('Usage: ' . basename($_SERVER['PHP_SELF']) . ' --alltests --path=TARGET_PATH' . PHP_EOL);
-        $this->output('Options:');
-        $this->output($this->_optionInterface->getHelpText());
+        $this->getOutputInterface()->output('Usage: ' . basename($_SERVER['PHP_SELF']) . ' --alltests --path=TARGET_PATH' . PHP_EOL);
+        $this->getOutputInterface()->output('Options:');
+        $this->getOutputInterface()->output($this->_optionInterface->getHelpText());
     }
 
+    
 }

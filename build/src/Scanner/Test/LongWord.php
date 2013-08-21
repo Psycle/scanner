@@ -27,6 +27,6 @@ class Scanner_Test_LongWord extends Scanner_Test_Abstract {
     protected $_options;
     
     protected function _run() {
-        throw new Scanner_Test_Exception('Test error');
+        
     }
 }

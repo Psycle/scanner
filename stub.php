@@ -15,13 +15,5 @@ function autoloadcallback($className) {
 
 require_once 'phar://scanner.phar/vendor/catacgc/juice-di-container/src/Container.php';
 
-$di = new JuiceContainer();
-$di['filter_string'] = JuiceDefinition::create('Scanner_Util_Filter_String');
-$di['logger'] = JuiceDefinition::create('Scanner_Log_ErrorLog');
-$di['cli_optionhandler'] = JuiceDefinition::create('Scanner_CliHandler_Option_GetOpt');
-$di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler', '@logger'))->call('setStringFilterInterface', array('@filter_string'));
-
-
-$di['cli_handler']->output(PHP_EOL);
-$di['cli_handler']->run();
+require_once dirname(dirname(__FILE__)) . '/setup_di.php';
 __HALT_COMPILER();
