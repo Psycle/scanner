@@ -68,7 +68,7 @@ class Scanner_CliHandlerTest extends PHPUnit_Framework_TestCase {
      * @todo   Implement testRun().
      */
     public function testRun() {
-        $this->assertTrue($this->object->run());
+        $this->assertNotInstanceOf('Exception', $this->object->run());
     }
 
     /**

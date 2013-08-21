@@ -96,7 +96,11 @@ abstract class Scanner_CliHandler_Abstract implements Scanner_Output_Interface {
     }
 
     public function __destruct() {
-        fclose($this->getStreamResource());
+        if(is_resource($this->getStreamResource()))
+        {
+            fclose($this->getStreamResource());
+        }
+        
     }
 
     public function output($string, $colour = 'white') {
