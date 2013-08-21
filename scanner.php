@@ -8,18 +8,19 @@ function autoloadcallback($className) {
     
 	if (file_exists($classPath)) {
 		require($classPath);
-	} else {
-        throw new Exception('file not found ' . $classPath);
-    }
+	}
+    
+    return false;
 }
 
 
 require_once dirname(__FILE__) . '/vendor/catacgc/juice-di-container/src/Container.php';
 
 $di = new JuiceContainer();
-
-$di['cli_optionhandler'] = JuiceDefinition::create('Scanner_CliHandler_Option');
-$di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler'));
+$di['filter_string'] = JuiceDefinition::create('Scanner_Util_Filter_String');
+$di['logger'] = JuiceDefinition::create('Scanner_Log_ErrorLog');
+$di['cli_optionhandler'] = JuiceDefinition::create('Scanner_CliHandler_Option_GetOpt');
+$di['cli_handler'] = JuiceDefinition::create('Scanner_CliHandler', array('@cli_optionhandler', '@logger'))->call('setStringFilterInterface', array('@filter_string'));
 
 
 $di['cli_handler']->output(PHP_EOL);

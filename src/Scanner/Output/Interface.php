@@ -1,7 +1,7 @@
 <?php
 
 interface Scanner_Output_Interface {
-    public function output($string, $class);
+    public function output($string, $class = null);
     
     public function outputError($string);
     

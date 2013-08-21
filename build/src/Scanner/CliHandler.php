@@ -1,120 +1,123 @@
 <?php
 
-class Scanner_CliHandler implements Scanner_Output_Interface {
-
-    public $streamPath = 'php://stdout';
-    protected $_outputStream;
-
+class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements 
+        Scanner_Output_Interface,         
+        Scanner_Util_Filter_String_RequireInterface {
+    
     /**
      *
      * @var Scanner_Option_Interface
      */
     protected $_optionInterface;
-    protected $_colourClass;
+
+    /**
+     *
+     * @var Scanner_Util_Filter_String_Interface
+     */
+    protected $_stringInterface;
+    
+    /**
+     *
+     * @var array 
+     */
     protected $_options = array(
-        'alltests' => array(
-            'switch' => true,
-            'default' => true,
-            'shortname' => 'a',
-        ),
-        'test' => array(
-            'shortname' => 't',
-            'require' => array(
-                'longword',
-                'entropy',
-            ),
-        ),
-        'extension' => array(
-            'default' => 'php',
-            'required' => true,
-            'shortname' => 'e',
-            'description' => 'The file extension to be scanned'
-        ),
+        array('a', 'alltests', Scanner_CliHandler_Option_GetOpt::NO_ARGUMENT, 'Run all tests'),
+        array('t', 'test', Scanner_CliHandler_Option_GetOpt::REQUIRED_ARGUMENT, 'Run specified test'),
+        array('p', 'path', Scanner_CliHandler_Option_GetOpt::REQUIRED_ARGUMENT, 'The path to scan'),
+        array('e', 'extension', Scanner_CliHandler_Option_GetOpt::REQUIRED_ARGUMENT, 'The file extension to scan'),
     );
 
-    public function __construct(Scanner_Option_Interface $optionInterface) {
-        $this->_optionInterface = $optionInterface;
-        $this->_optionInterface->setup($this->_options);
-        
+    public function setStringFilterInterface(Scanner_Util_Filter_String_Interface $stringInterface) {
+        $this->_stringInterface = $stringInterface;
     }
-
-    public function getStreamResource() {
-        if (is_null($this->_outputStream)) {
-            $this->_outputStream = fopen($this->streamPath, 'r');
-        }
-
-        return $this->_outputStream;
-    }
-
-    public function writeToOutput($string) {
-        fwrite($this->getStreamResource(), $string);
-        return $this;
-    }
-
-    public function __destruct() {
-        fclose($this->getStreamResource());
-    }
-
-    public function output($string, $colour = 'white') {
-        $this->writeToOutput($this->getColourClass()->getColoredString($string, $colour) . PHP_EOL);
-    }
-
+    
     /**
      * 
-     * @return Scanner_CliHandler_Colour
+     * @return Scanner_Util_Filter_String_Interface
      */
-    public function getColourClass() {
-        if (is_null($this->_colourClass)) {
-            $this->_colourClass = new Scanner_CliHandler_Colour;
-        }
-
-        return $this->_colourClass;
+    public function getStringFilterInterface() {
+        return $this->_stringInterface;
     }
-
+    
     /**
      * 
-     * @param string $string
      */
-    public function outputMessage($string) {
-        $this->output($string, 'green');
-    }
-
-    /**
-     * 
-     * @param string $string
-     */
-    public function outputError($string) {
-        $this->output($string, 'red');
-    }
-
     public function run() {
         try {
             $this->_run();
-        } catch (Scanner_CliHandler_Option_Exception $e) {
+        } 
+        catch (Scanner_CliHandler_Exception $e) {
             $this->outputError($e->getMessage() . PHP_EOL);
+            $this->outputUsage();
+        }
+         catch (Scanner_Test_Exception $e) {
+            $this->outputError('Error in test "' . $this->_currentTest . '": ' . PHP_EOL . '"' . $e->getMessage() . '"' . PHP_EOL);
             $this->outputUsage();
         }
     }
 
-    protected function _run() {
-        $this->_optionInterface->init();
+    /**
+     * 
+     */
+    protected function _run() {  
+        $this->_optionInterface->parse();
         if ($this->_optionInterface->getOption('alltests', false)) {
-            $this->_runAllTests();
+            $this->runAllTests();
         } else if ($this->_optionInterface->getOption('test', false) != false) {
-            $this->_runTest($this->_optionInterface->getOption('test', false));
+            $this->runTest($this->_optionInterface->getOption('test', false));
         } else {
             $this->outputUsage();
         }
     }
+    
+    /**
+     * 
+     */
+    public function runAllTests() {
+        $this->outputMessage('Running all tests');
+    }
 
-    protected function _runTest() {
-        
+    /**
+     * 
+     */
+    public function runTest($test) {
+        $this->_currentTest = $test;
+        $this->getTestInstance($this->_currentTest)->run();
+        $this->outputMessage('Running test ' . $test);
     }
     
+    /**
+     * 
+     * @param type $test
+     * @return Scanner_Test_Interface
+     * @throws Scanner_CliHandler_Exception
+     */
+    public function getTestInstance($test = null) {
+        $testClassName = $this->getTestClassname($test);
+        if(!class_exists($testClassName))
+        {
+            throw new Scanner_CliHandler_Exception('The specified test does not exist.');
+        }
+        
+        return new $testClassName($this->_optionInterface, $this, $this->_logger);
+    }
+    
+    /**
+     * 
+     * @param string $test
+     */
+    public function getTestClassname($test = null) {
+        $test = is_null($test) ? $this->_currentTest : $test;
+        return 'Scanner_Test_' . $this->getStringFilterInterface()->camelize($test);
+    }
+    
+    /**
+     * 
+     */
     public function outputUsage() {
         $this->output('Usage: ' . basename($_SERVER['PHP_SELF']) . ' --alltests --path=TARGET_PATH' . PHP_EOL);
         $this->output('Options:');
-        $this->output($this->_optionInterface->getDocumentation());
+        $this->output($this->_optionInterface->getHelpText());
     }
 
 }
