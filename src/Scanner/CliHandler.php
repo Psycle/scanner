@@ -26,11 +26,17 @@ class Scanner_CliHandler extends Scanner_CliHandler_Abstract implements
         array('e', 'extension', Scanner_CliHandler_Option_GetOpt::REQUIRED_ARGUMENT, 'The file extension to scan'),
     );
 
+    /**
+     * Sets the object used for string filtering
+     * 
+     * @param Scanner_Util_Filter_String_Interface $stringInterface
+     */
     public function setStringFilterInterface(Scanner_Util_Filter_String_Interface $stringInterface) {
         $this->_stringInterface = $stringInterface;
     }
     
     /**
+     * Gets the string filtering object
      * 
      * @return Scanner_Util_Filter_String_Interface
      */
